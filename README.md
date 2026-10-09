@@ -1,6 +1,10 @@
-# Personeros IAAS - Sistema Serverless de Votación
+# Con Personeros IAAS - Sistema Serverless de Votación
 
 Proyecto serverless en AWS para el sistema de conteo de votos de Personeros usando Serverless Framework.
+
+## Dependencia
+
+El frontend de este proyecto se encuentra en el siguiente repo: [con_personeros](https://github.com/jhonazsh17/con_personeros)
 
 ## Arquitectura
 
