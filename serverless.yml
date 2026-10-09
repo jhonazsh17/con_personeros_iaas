@@ -1,0 +1,268 @@
+service: personeros-voting-serverless
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  environment:
+    RECORD_ITEMS_TABLE: ${self:service}-record-items
+    RECORDS_TABLE: ${self:service}-records
+    USERS_TABLE: ${self:service}-users
+    APP_CONFIG_APPLICATION_ID: !Ref FeatureFlagApplication
+    APP_CONFIG_ENVIRONMENT_ID: !Ref FeatureFlagEnvironment
+    APP_CONFIG_CONFIGURATION_PROFILE_ID: !Ref FeatureFlagConfigurationProfile
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            - dynamodb:Query
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-record-items"
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-records"
+            - "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-users"
+        - Effect: Allow
+          Action:
+            - appconfig:GetConfiguration
+          Resource:
+            - "*"
+
+
+functions:
+  register-users:
+    handler: functions/register-users/index.handler
+    events:
+      - http:
+          path: users
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
+
+  login-user:
+    handler: functions/login-user/index.handler
+    events:
+      - http:
+          path: users/login
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Amz-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
+
+  check-acta-registered:
+    handler: functions/check-acta-registered/index.handler
+    events:
+      - http:
+          path: users/acta-registered
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Amz-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
+
+  save-acta:
+    handler: functions/save-acta/index.handler
+    events:
+      - http:
+          path: records
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
+
+  update-acta:
+    handler: functions/update-acta/index.handler
+    events:
+      - http:
+          path: records/{actaId}
+          method: put
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Amz-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
+
+  get-actas:
+    handler: functions/get-actas/index.handler
+    events:
+      - http:
+          path: records
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
+
+  get-candidate-votes:
+    handler: functions/get-candidate-votes/index.handler
+    events:
+      - http:
+          path: votes/candidates
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
+
+  get-feature-flag:
+    handler: functions/get-feature-flag/index.handler
+    events:
+      - http:
+          path: feature-flags/{featureName}
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
+
+resources:
+  Resources:
+    RecordItemsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-record-items
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    RecordsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-records
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-users
+        AttributeDefinitions:
+          - AttributeName: dni
+            AttributeType: S
+        KeySchema:
+          - AttributeName: dni
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # AppConfig Application
+    FeatureFlagApplication:
+      Type: AWS::AppConfig::Application
+      Properties:
+        Name: PersonerosFeatureFlags
+        Description: Feature flags for Personeros application
+
+    # AppConfig Environment
+    FeatureFlagEnvironment:
+      Type: AWS::AppConfig::Environment
+      Properties:
+        ApplicationId: !Ref FeatureFlagApplication
+        Name: Production
+        Description: Production environment for feature flags
+
+    # AppConfig Configuration Profile
+    FeatureFlagConfigurationProfile:
+      Type: AWS::AppConfig::ConfigurationProfile
+      Properties:
+        ApplicationId: !Ref FeatureFlagApplication
+        Name: FeatureFlags
+        Description: Feature flags configuration
+        LocationUri: hosted
+
+    # AppConfig Hosted Configuration Version
+    FeatureFlagConfiguration:
+      Type: AWS::AppConfig::HostedConfigurationVersion
+      Properties:
+        ApplicationId: !Ref FeatureFlagApplication
+        ConfigurationProfileId: !Ref FeatureFlagConfigurationProfile
+        ContentType: application/json
+        Content: |
+          {
+            "features": {
+              "enableNewVotingSystem": true
+            }
+          }
+
+    # AppConfig Deployment Strategy
+    FeatureFlagDeploymentStrategy:
+      Type: AWS::AppConfig::DeploymentStrategy
+      Properties:
+        Name: ImmediateDeployment
+        Description: Deploy changes immediately
+        DeploymentDurationInMinutes: 0
+        FinalBakeTimeInMinutes: 0
+        GrowthFactor: 100
+        GrowthType: LINEAR
+        ReplicateTo: NONE
+
+    # AppConfig Deployment
+    FeatureFlagDeployment:
+      Type: AWS::AppConfig::Deployment
+      Properties:
+        ApplicationId: !Ref FeatureFlagApplication
+        EnvironmentId: !Ref FeatureFlagEnvironment
+        ConfigurationProfileId: !Ref FeatureFlagConfigurationProfile
+        ConfigurationVersion: !GetAtt FeatureFlagConfiguration.VersionNumber
+        DeploymentStrategyId: !Ref FeatureFlagDeploymentStrategy
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000

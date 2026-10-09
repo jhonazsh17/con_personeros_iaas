@@ -1,0 +1,24 @@
+{
+  "name": "personeros-iaas",
+  "version": "1.0.0",
+  "description": "Serverless voting system for Personeros",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "deploy:prod": "serverless deploy --stage prod",
+    "remove": "serverless remove",
+    "invoke:local": "serverless invoke local --function",
+    "logs": "serverless logs --function",
+    "offline": "serverless offline"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1500.0"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.0"
+  }
+}
