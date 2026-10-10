@@ -1,5 +1,5 @@
 {
-  "name": "personeros-iaas",
+  "name": "personeros-iac",
   "version": "1.0.0",
   "description": "Serverless voting system for Personeros",
   "main": "index.js",

@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const USERS_TABLE = process.env.USERS_TABLE || 'personeros-iaas-users';
+const USERS_TABLE = process.env.USERS_TABLE || 'personeros-voting-serverless-users';
 const ALLOWED_ROLES = new Set(['admin', 'coordinador', 'personero']);
 
 const response = (statusCode, body) => ({

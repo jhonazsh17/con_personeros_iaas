@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const RECORD_ITEMS_TABLE = process.env.RECORD_ITEMS_TABLE || 'personeros-iaas-record-items';
+const RECORD_ITEMS_TABLE = process.env.RECORD_ITEMS_TABLE || 'personeros-voting-serverless-record-items';
 
 exports.handler = async (event) => {
   console.log('Get Candidate Votes Event:', JSON.stringify(event, null, 2));

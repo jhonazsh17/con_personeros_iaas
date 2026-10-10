@@ -2,10 +2,10 @@ const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const sns = new AWS.SNS();
 
-const RECORD_ITEMS_TABLE = process.env.RECORD_ITEMS_TABLE || 'personeros-iaas-record-items';
-const RECORDS_TABLE = process.env.RECORDS_TABLE || 'personeros-iaas-records';
+const RECORD_ITEMS_TABLE = process.env.RECORD_ITEMS_TABLE || 'personeros-voting-serverless-record-items';
+const RECORDS_TABLE = process.env.RECORDS_TABLE || 'personeros-voting-serverless-records';
 const EMAIL_TOPIC_ARN = process.env.EMAIL_TOPIC_ARN;
-const USERS_TABLE = process.env.USERS_TABLE || 'personeros-iaas-users';
+const USERS_TABLE = process.env.USERS_TABLE || 'personeros-voting-serverless-users';
 
 // Hardcoded partidos based on candidate names
 const PARTIDOS = {

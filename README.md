@@ -1,4 +1,4 @@
-# Con Personeros IAAS - Sistema Serverless de Votación
+# Con Personeros IAC - Sistema Serverless de Votación
 
 Proyecto serverless en AWS para el sistema de conteo de votos de Personeros usando Serverless Framework.
 
@@ -19,7 +19,7 @@ El frontend de este proyecto se encuentra en el siguiente repo: [con_personeros]
 ## Estructura del Proyecto
 
 ```
-con_personeros_iaas/
+con_personeros_iac/
 ├── serverless.yml            # Configuración de Serverless Framework
 ├── package.json              # Dependencias de Node.js
 ├── functions/
@@ -248,7 +248,7 @@ El sistema usa AWS AppConfig para gestionar feature flags dinámicamente. Los va
 
 ### 1. Instalar dependencias
 ```bash
-cd con_personeros_iaas
+cd con_personeros_iac
 npm install
 ```
 

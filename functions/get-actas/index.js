@@ -1,9 +1,9 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const RECORDS_TABLE = process.env.RECORDS_TABLE || 'personeros-iaas-records';
-const RECORD_ITEMS_TABLE = process.env.RECORD_ITEMS_TABLE || 'personeros-iaas-record-items';
-const USERS_TABLE = process.env.USERS_TABLE || 'personeros-iaas-users';
+const RECORDS_TABLE = process.env.RECORDS_TABLE || 'personeros-voting-serverless-records';
+const RECORD_ITEMS_TABLE = process.env.RECORD_ITEMS_TABLE || 'personeros-voting-serverless-record-items';
+const USERS_TABLE = process.env.USERS_TABLE || 'personeros-voting-serverless-users';
 
 exports.handler = async (event) => {
   console.log('Get Actas Event:', JSON.stringify(event, null, 2));

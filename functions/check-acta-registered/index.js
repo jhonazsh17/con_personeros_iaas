@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const RECORDS_TABLE = process.env.RECORDS_TABLE || 'personeros-iaas-records';
+const RECORDS_TABLE = process.env.RECORDS_TABLE || 'personeros-voting-serverless-records';
 
 const response = (statusCode, body) => ({
   statusCode,
